@@ -23,6 +23,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "../Foundation/Foundation.h"
+
 @import "CPControl.j"
 
 // CPScroller Constants
@@ -260,6 +262,9 @@ CPThemeStateScrollerKnobDark    = CPThemeState("scroller-knob-dark");
 */
 - (void)setKnobProportion:(float)aProportion
 {
+    if (!_IS_NUMERIC(aProportion))
+        [CPException raise:CPInvalidArgumentException reason:"aProportion must be numeric"];
+
     _knobProportion = MIN(1.0, MAX(0.0001, aProportion));
 
     [self setNeedsDisplay:YES];
@@ -521,7 +526,8 @@ CPThemeStateScrollerKnobDark    = CPThemeState("scroller-knob-dark");
     [self checkSpaceForParts];
 
     var index = 0,
-        count = PARTS_ARRANGEMENT.length;
+        count = PARTS_ARRANGEMENT.length,
+        view;
 
     for (; index < count; ++index)
     {
