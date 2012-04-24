@@ -5,7 +5,7 @@ _CPMenuManagerScrollingStateUp      = -1;
 _CPMenuManagerScrollingStateDown    = 1;
 _CPMenuManagerScrollingStateNone    = 0;
 
-var STICKY_TIME_INTERVAL            = 500,
+var STICKY_TIME_INTERVAL            = 0.5,
     SharedMenuManager               = nil;
 
 @implementation _CPMenuManager: CPObject
@@ -127,7 +127,7 @@ var STICKY_TIME_INTERVAL            = 500,
 
     if (_keyBuffer)
     {
-        if (([CPDate date] - _startTime) > (STICKY_TIME_INTERVAL + [activeMenu numberOfItems] / 2))
+        if (([anEvent timestamp] - _startTime) > (STICKY_TIME_INTERVAL + [activeMenu numberOfItems] / 2))
             [self selectNextItemBeginningWith:_keyBuffer inMenu:menu clearBuffer:YES];
 
         if (type === CPPeriodic)
@@ -245,7 +245,7 @@ var STICKY_TIME_INTERVAL            = 500,
 
                 3. The user clicks, drags and then releases. Tracking ends.
             */
-            if (_mouseWasDragged || [anEvent timestamp] - _startTime > STICKY_TIME_INTERVAL)
+            if (_mouseWasDragged || ([anEvent timestamp] - _startTime > STICKY_TIME_INTERVAL))
             {
                 /*
                     Close the menu if:
@@ -255,7 +255,7 @@ var STICKY_TIME_INTERVAL            = 500,
                     3. The current item has a submenu with a custom action.
                 */
                 if (_mouseWasDragged ||
-                    [activeMenuContainer isKindOfClass:_CPMenuBarWindow] ||
+                    [activeMenuContainer isMenuBar] ||
                     [activeItem action] !== @selector(submenuAction:))
                 {
                     [trackingMenu cancelTracking];
@@ -273,7 +273,7 @@ var STICKY_TIME_INTERVAL            = 500,
     }
 
     // If the item has a submenu, show it.
-    if ([activeItem hasSubmenu])// && [activeItem action] === @selector(submenuAction:))
+    if ([activeItem hasSubmenu]) // && [activeItem action] === @selector(submenuAction:))
     {
         var activeItemRect = [activeMenuContainer rectForItemAtIndex:activeItemIndex],
             newMenuOrigin;
@@ -427,7 +427,7 @@ var STICKY_TIME_INTERVAL            = 500,
             break;
 
         // If this menu is already being shown, unhighlight and return.
-        if (menu === newMenu)//&& [menu supermenu] === baseMenu)
+        if (menu === newMenu) //&& [menu supermenu] === baseMenu)
             return [newMenu _highlightItemAtIndex:CPNotFound];
 
         [menuContainer orderOut:self];
@@ -473,7 +473,7 @@ var STICKY_TIME_INTERVAL            = 500,
         var iter = [selectorNames objectEnumerator],
             obj;
 
-        while (obj = [iter nextObject])
+        while ((obj = [iter nextObject]) !== nil)
         {
             var aSelector = CPSelectorFromString(obj);
 
@@ -504,7 +504,7 @@ var STICKY_TIME_INTERVAL            = 500,
     var iter = [[menu itemArray] objectEnumerator],
         obj;
 
-    while (obj = [iter nextObject])
+    while ((obj = [iter nextObject]) !== nil)
     {
         if ([obj isHidden] || ![obj isEnabled])
             continue;
