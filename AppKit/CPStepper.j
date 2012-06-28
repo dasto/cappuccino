@@ -144,8 +144,8 @@
         minSize = _CGSizeMake(upSize.width, upSize.height + downSize.height),
         frame = _CGRectMakeCopy(aFrame);
 
-    frame.size.width = Math.max(minSize.width, frame.size.width);
-    frame.size.height = Math.max(minSize.height, frame.size.height);
+    frame.size.width = MAX(minSize.width, frame.size.width);
+    frame.size.height = MAX(minSize.height, frame.size.height);
     [super setFrame:frame];
 }
 
@@ -263,10 +263,10 @@ var CPStepperMinValue   = @"CPStepperMinValue",
     if (self = [super initWithCoder:aCoder])
     {
         _increment  = [aCoder decodeIntForKey:CPStepperIncrement];
-        _minValue   = [aCoder decodeIntForKey:CPStepperMinValue] || 0;
-        _maxValue   = [aCoder decodeIntForKey:CPStepperMaxValue] || 0;
-        _valueWraps = [aCoder decodeBoolForKey:CPStepperValueWraps] || NO;
-        _autorepeat = [aCoder decodeBoolForKey:CPStepperAutorepeat] || NO;
+        _minValue   = [aCoder decodeIntForKey:CPStepperMinValue];
+        _maxValue   = [aCoder decodeIntForKey:CPStepperMaxValue];
+        _valueWraps = [aCoder decodeBoolForKey:CPStepperValueWraps];
+        _autorepeat = [aCoder decodeBoolForKey:CPStepperAutorepeat];
 
         [self _init];
     }
